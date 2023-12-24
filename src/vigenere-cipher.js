@@ -20,13 +20,67 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  constructor(isDirect = true) {
+    this.isDirect = isDirect;
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  
+  encrypt(message, key) {
+    this.validateInputs(message, key);
+
+    const repeatedKey = this.repeatKey(key, message.length);
+    const encryptedChars = message.split('').map((char, index) => {
+      if (char.match(/[A-Za-z]/)) {
+        const baseCharCode = char.toUpperCase().charCodeAt(0);
+        const keyCharCode = repeatedKey[index].toUpperCase().charCodeAt(0);
+        const encryptedCharCode = (baseCharCode + keyCharCode) % 26 + 'A'.charCodeAt(0);
+        return String.fromCharCode(encryptedCharCode);
+      } else {
+        return char;
+      }
+    });
+
+    return this.isDirect ? encryptedChars.join('') : encryptedChars.reverse().join('');
+  }
+
+  decrypt(encryptedMessage, key) {
+    this.validateInputs(encryptedMessage, key);
+
+    const repeatedKey = this.repeatKey(key, encryptedMessage.length);
+
+    const decryptedChars = encryptedMessage.split('').map((char, index) => {
+      if (char.match(/[A-Za-z]/)) {
+        const baseCharCode = char.toUpperCase().charCodeAt(0);
+        const keyCharCode = repeatedKey[index].toUpperCase().charCodeAt(0);
+        const decryptedCharCode = (baseCharCode - keyCharCode + 26) % 26 + 'A'.charCodeAt(0);
+        return String.fromCharCode(decryptedCharCode);
+      } else {
+        return char;
+      }
+    });
+
+    return this.isDirect ? decryptedChars.join('') : decryptedChars.reverse().join('');
+  }
+
+  repeatKey(key, length) {
+
+    const repeatedKey = [];
+    let keyIndex = 0;
+
+    for (let i = 0; i < length; i++) {
+      if (keyIndex === key.length) {
+        keyIndex = 0;
+      }
+      repeatedKey.push(key[keyIndex]);
+      keyIndex++;
+    }
+
+    return repeatedKey.join('');
+  }
+
+  validateInputs(message, key) {
+    if (!message || !key) {
+      throw new Error('Message and key are required');
+    }
   }
 }
 
