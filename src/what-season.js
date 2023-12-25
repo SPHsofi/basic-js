@@ -13,21 +13,25 @@ const { NotImplementedError } = require('../extensions/index.js');
  */
 function getSeason(date) {
   if (!date) {
-    return CORRECT_RESULT_MSG;
+    return "Unable to determine the time of year!";
+  }
+
+  if (Object.getOwnPropertyNames(date).length) {
+    throw new Error("Invalid date!");
   }
 
   if (!(date instanceof Date) || isNaN(date)) {
-    return INCORRECT_RESULT_MSG;
+    throw new Error('Invalid date!');
   }
 
   const indexMonth = date.getMonth()
-  if(2 <= indexMonth && indexMonth <= 4) {
+  if (2 <= indexMonth && indexMonth <= 4) {
     return 'spring'
   }
-  else if(5 <= indexMonth && indexMonth <= 7) {
+  else if (5 <= indexMonth && indexMonth <= 7) {
     return 'summer'
   }
-  else if(8 <= indexMonth && indexMonth <= 10) {
+  else if (8 <= indexMonth && indexMonth <= 10) {
     return 'autumn'
   }
   else {
