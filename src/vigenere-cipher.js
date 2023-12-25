@@ -23,6 +23,12 @@ class VigenereCipheringMachine {
   constructor(isDirect = true) {
     this.isDirect = isDirect;
   }
+
+  validateInputs(message, key) {
+    if (!message || !key) {
+      throw new Error("Incorrect arguments!");
+    }
+  }
   
   encrypt(message, key) {
     this.validateInputs(message, key);
@@ -75,12 +81,6 @@ class VigenereCipheringMachine {
     }
 
     return repeatedKey.join('');
-  }
-
-  validateInputs(message, key) {
-    if (!message || !key) {
-      throw new Error('Message and key are required');
-    }
   }
 }
 
